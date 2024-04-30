@@ -1,0 +1,135 @@
+import React, { useEffect, useState } from 'react'
+import '../CSS/quiz.css'
+export default function Quiz() {
+    const questions = [
+        {
+            "id": 1,
+            "question": "What is the capital of Atlantis?",
+            "options": ["Atlantica", "Poseidonis", "New Atlantis", "Atlantis City"],
+            "correct_answer": "Poseidonis"
+        },
+        {
+            "id": 2,
+            "question": "Who is the CEO of Acme Corporation?",
+            "options": ["John Smith", "Jane Doe", "Michael Johnson", "Emily Davis"],
+            "correct_answer": "Jane Doe"
+        },
+        {
+            "id": 3,
+            "question": "What year was the Eiffel Tower completed?",
+            "options": ["1889", "1901", "1873", "1925"],
+            "correct_answer": "1889"
+        },
+        {
+            "id": 4,
+            "question": "Which planet is known as the 'Red Planet'?",
+            "options": ["Venus", "Mars", "Jupiter", "Neptune"],
+            "correct_answer": "Mars"
+        },
+        {
+            "id": 5,
+            "question": "Who wrote the play 'Hamlet'?",
+            "options": ["William Shakespeare", "Jane Austen", "Charles Dickens", "Leo Tolstoy"],
+            "correct_answer": "William Shakespeare"
+        },
+        {
+            "id": 6,
+            "question": "What is the chemical symbol for gold?",
+            "options": ["Au", "Ag", "Fe", "Cu"],
+            "correct_answer": "Au"
+        },
+        {
+            "id": 7,
+            "question": "Which country is famous for producing tea?",
+            "options": ["China", "Brazil", "India", "Russia"],
+            "correct_answer": "India"
+        },
+        {
+            "id": 8,
+            "question": "What is the tallest mountain in the world?",
+            "options": ["Mount Everest", "K2", "Kangchenjunga", "Makalu"],
+            "correct_answer": "Mount Everest"
+        },
+        {
+            "id": 9,
+            "question": "Who painted the Mona Lisa?",
+            "options": ["Leonardo da Vinci", "Vincent van Gogh", "Pablo Picasso", "Michelangelo"],
+            "correct_answer": "Leonardo da Vinci"
+        },
+        {
+            "id": 10,
+            "question": "Which is the largest ocean on Earth?",
+            "options": ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+            "correct_answer": "Pacific Ocean"
+        }
+    ]
+    const [questionNum, setQuestionNum] = useState(0);
+    const [userAnswer, setUserAnswer] = useState('');
+    const [isCorrect, setIsCorrect] = useState(false);
+    const next = ()=> {
+        setQuestionNum(questionNum+1)
+        setIsCorrect(false)
+    };
+    useEffect(()=> {if(questionNum > 9) setQuestionNum(0)}, [questionNum]);
+    const isRight = ()=>{
+        setIsCorrect(true);
+    }
+    useEffect(()=> console.log(isCorrect),[isCorrect]);
+    return (
+        <div>
+            <div className="container md:text-xl">
+                <h1>Quiz Time!</h1>
+                {questions[questionNum] ? 
+                <div className="question">
+                    <p>{questions[questionNum]['question']}</p>
+                    <ul className="options">
+                        <li className='bg-[#f9f9f9]'>
+                            <input type="radio" id="option1" name="question1" />
+                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][0] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
+                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : 
+                            isCorrect && userAnswer == questions[questionNum]['options'][0] ? 'bg-red-500' : 
+                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : ""
+                            }
+                            `} onClick={()=> setUserAnswer(questions[questionNum]['options'][0])} htmlFor="option1">1) {questions[questionNum]['options'][0]}</label>
+                        </li>
+                        <li className='bg-[#f9f9f9]'>
+                            <input type="radio" id="option2" name="question1" />
+                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][1] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
+                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : 
+                            isCorrect && userAnswer == questions[questionNum]['options'][1] ? 'bg-red-500' : 
+                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : ""
+                            }
+                            `} 
+                            onClick={()=> setUserAnswer(questions[questionNum]['options'][1])} htmlFor="option2">2) {questions[questionNum]['options'][1]}</label>
+                        </li>
+                        <li className='bg-[#f9f9f9]'>
+                            <input type="radio" id="option3" name="question1" />
+                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][2] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
+                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : 
+                            isCorrect && userAnswer == questions[questionNum]['options'][2] ? 'bg-red-500' : 
+                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : ""
+                            }
+                            `} onClick={()=> setUserAnswer(questions[questionNum]['options'][2])} htmlFor="option3">3) {questions[questionNum]['options'][2]}</label>
+                        </li>
+                        <li className='bg-[#f9f9f9]'>
+                            <input type="radio" id="option4" name="question1" />
+                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][3] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
+                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : 
+                            isCorrect && userAnswer == questions[questionNum]['options'][3] ? 'bg-red-500' : 
+                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : ""
+                            }
+                            `}  onClick={()=> setUserAnswer(questions[questionNum]['options'][3])} htmlFor="option4">4) {questions[questionNum]['options'][3]}</label>
+                        </li>
+                    </ul>
+                </div> : ""}
+                <button onClick={()=> isRight()} className="submit-btn ml-auto block">Submit</button>
+                <button className="text-white bg-red-400 font-medium 
+                   block ml-auto rounded-md text-lg px-6 py-2 mt-2" onClick={()=> next()}>Next</button>
+            </div>
+        </div>
+    )
+}
