@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../CSS/quiz.css';
 import '../CSS/result.css'
 export default function Quiz({ quizStarted, setQuizStarted }) {
@@ -69,20 +69,27 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
     const [isCorrect, setIsCorrect] = useState(false);
     const [score, setScore] = useState(0);
     const [showResult, setShowResult] = useState(false);
+    const [violationCount, setViolationCount] = useState(0);
+
+
+    useEffect(() => {
+        if (quizStarted) {
+            const savedScore = localStorage.getItem('score');
+            const qNum = localStorage.getItem('questionNum');
+            const vioCount = localStorage.getItem('violationCount');
+            console.log(vioCount)
+            setQuestionNum(Number(qNum));
+            setScore(Number(savedScore));
+            setViolationCount(Number(vioCount));
+        }
+    }, [])
 
     const next = () => {
         setQuestionNum(questionNum + 1);
         setIsCorrect(false);
         setUserAnswer('');
     };
-    useEffect(() => {
-        if (quizStarted) {
-            const savedScore = localStorage.getItem('score');
-            const qNum = localStorage.getItem('questionNum');
-            setQuestionNum(Number(qNum))
-            setScore(Number(savedScore));
-        }
-    }, [])
+
     const isRight = () => {
         setIsCorrect(true);
         if (userAnswer == questions[questionNum]["correct_answer"]) setScore(score + 1);
@@ -98,6 +105,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
         setScore(0);
         localStorage.setItem('score', 0);
         localStorage.setItem('questionNum', 0);
+        setViolationCount(0);
     }
 
     useEffect(() => {
@@ -105,14 +113,65 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
             setShowResult(true)
         }
     }, [questionNum]);
+
+    useEffect(() => {
+        localStorage.setItem('violationCount', violationCount.toString())
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                setViolationCount(violationCount + 1);
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [violationCount]);
+
+    const [isFullScreen, setIsFullScreen] = useState(false);
+
+    useEffect(() => {
+        const handleFullScreenChange = () => {
+            setIsFullScreen(document.fullscreenElement !== null);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+        };
+    }, []);
+
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error('Failed to enter full screen mode:', err);
+            });
+        } else {
+            document.exitFullscreen().catch(err => {
+                console.error('Failed to exit full screen mode:', err);
+            });
+        }
+    };
+
     return (
         <div>
+
             <div className="container md:text-xl">
+                <div className=' text-center'>
+                    <p>{isFullScreen ? '' : 'Yor are not using full screen'}</p>
+                    <button onClick={toggleFullScreen} className=" hover:text-white border border-purple-700
+                     hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 
+                     font-medium rounded-lg text-md px-5 py-2.5 text-black text-center me-2 mb-2 
+                       dark:hover:text-white dark:hover:bg-purple-500">
+                        {isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+                    </button>
+                </div>
                 {showResult ? <div className="container0">
                     <div className="header">Quiz Result</div>
                     <div className="result">{`${score} out of 10`}</div>
                     <div className="message">{`${score > 4 ? "Congratulations! You did a great job!" : "Do your best next time"}`}</div>
-                    <button onClick={()=> restart()} className="button">Try Again</button>
+                    <button onClick={() => restart()} className="button">Try Again</button>
                 </div> :
                     <div>
                         <h1>Quiz Time!</h1>
@@ -177,11 +236,16 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                             }} className="submit-btn px-4 py-1 ml-auto block">Submit</button> :
                             <button className="text-white bg-red-400 font-medium 
                    block ml-auto rounded-md text-lg px-5 py-[5px] mt-2" onClick={() => next()}>Next</button>}
-                   <button onClick={() => { restart() }} type="button" className="text-black bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 
+                        <button onClick={() => { restart() }} type="button" className="text-black bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 
                 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-md text-lg px-4 py-1 text-center me-2 mb-2">Restart</button>
+                        {violationCount >= 1 ?
+                            <div className=' bg-white px-1 py-[1px]'>
+                                <p className=' text-md text-red-700'>Violation Detected {violationCount} Times</p>
+                            </div>
+                            : ""}
                     </div>
                 }
-                
+
             </div>
         </div>
     )
