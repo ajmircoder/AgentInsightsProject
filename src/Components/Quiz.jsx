@@ -76,11 +76,8 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
         if (quizStarted) {
             const savedScore = localStorage.getItem('score');
             const qNum = localStorage.getItem('questionNum');
-            const vioCount = localStorage.getItem('violationCount');
-            console.log(vioCount)
             setQuestionNum(Number(qNum));
             setScore(Number(savedScore));
-            setViolationCount(Number(vioCount));
         }
     }, [])
 
@@ -176,7 +173,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                     <div>
                         <h1>Quiz Time!</h1>
                         {questions[questionNum] ?
-                            <div className="question">
+                            <form className="question">
                                 <p className='text-xl mb-2'>{questions[questionNum]['question']}</p>
                                 <ul className="options">
                                     <li className='bg-[#f9f9f9] rounded-md'>
@@ -187,7 +184,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                                                     isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : ""
                                             }
                             `} htmlFor="option1">1) {questions[questionNum]['options'][0]}
-                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][0])}
+                                            <input checked={userAnswer == questions[questionNum]['options'][0] ? true : false} onChange={() => setUserAnswer(questions[questionNum]['options'][0])}
                                                 disabled={isCorrect ? true : false}
                                                 type="radio" id="option1" name="question1" />
                                         </label>
@@ -200,7 +197,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                                                     isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : ""
                                             }
                             `} >2) {questions[questionNum]['options'][1]}
-                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][1])}
+                                            <input checked={userAnswer == questions[questionNum]['options'][1] ? true : false} onChange={() => setUserAnswer(questions[questionNum]['options'][1])}
                                                 disabled={isCorrect ? true : false} type="radio" id="option2" name="question1" />
                                         </label>
                                     </li>
@@ -212,7 +209,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                                                     isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : ""
                                             }
                             `} htmlFor="option3">3) {questions[questionNum]['options'][2]}
-                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][2])}
+                                            <input checked={userAnswer == questions[questionNum]['options'][2] ? true : false} onChange={() => setUserAnswer(questions[questionNum]['options'][2])}
                                                 disabled={isCorrect ? true : false} type="radio" id="option3" name="question1" />
                                         </label>
                                     </li>
@@ -224,12 +221,12 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                                                     isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : ""
                                             }
                             `} htmlFor="option4">4) {questions[questionNum]['options'][3]}
-                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][3])}
+                                            <input checked={userAnswer == questions[questionNum]['options'][3] ? true : false} onChange={() => setUserAnswer(questions[questionNum]['options'][3])}
                                                 disabled={isCorrect ? true : false} type="radio" id="option4" name="question1" />
                                         </label>
                                     </li>
                                 </ul>
-                            </div> : ""}
+                            </form> : ""}
                         {!isCorrect ? <button disabled={userAnswer == "" ? true : false}
                             onClick={() => {
                                 isRight();
