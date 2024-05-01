@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import '../CSS/quiz.css'
-export default function Quiz() {
+import '../CSS/quiz.css';
+import '../CSS/result.css'
+export default function Quiz({ quizStarted, setQuizStarted }) {
     const questions = [
         {
             "id": 1,
@@ -66,69 +67,121 @@ export default function Quiz() {
     const [questionNum, setQuestionNum] = useState(0);
     const [userAnswer, setUserAnswer] = useState('');
     const [isCorrect, setIsCorrect] = useState(false);
-    const next = ()=> {
-        setQuestionNum(questionNum+1)
-        setIsCorrect(false)
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+
+    const next = () => {
+        setQuestionNum(questionNum + 1);
+        setIsCorrect(false);
+        setUserAnswer('');
     };
-    useEffect(()=> {if(questionNum > 9) setQuestionNum(0)}, [questionNum]);
-    const isRight = ()=>{
+    useEffect(() => {
+        if (quizStarted) {
+            const savedScore = localStorage.getItem('score');
+            const qNum = localStorage.getItem('questionNum');
+            setQuestionNum(Number(qNum))
+            setScore(Number(savedScore));
+        }
+    }, [])
+    const isRight = () => {
         setIsCorrect(true);
+        if (userAnswer == questions[questionNum]["correct_answer"]) setScore(score + 1);
+        const temquestionNum = questionNum + 1;
+
+        localStorage.setItem('score', score.toString());
+        localStorage.setItem('questionNum', temquestionNum.toString());
     }
-    useEffect(()=> console.log(isCorrect),[isCorrect]);
+    const restart = () => {
+        localStorage.setItem('quizStarted', true);
+        setQuizStarted(false);
+        setQuestionNum(0)
+        setScore(0);
+        localStorage.setItem('score', 0);
+        localStorage.setItem('questionNum', 0);
+    }
+
+    useEffect(() => {
+        if (questionNum > 9) {
+            setShowResult(true)
+        }
+    }, [questionNum]);
     return (
         <div>
             <div className="container md:text-xl">
-                <h1>Quiz Time!</h1>
-                {questions[questionNum] ? 
-                <div className="question">
-                    <p>{questions[questionNum]['question']}</p>
-                    <ul className="options">
-                        <li className='bg-[#f9f9f9]'>
-                            <input type="radio" id="option1" name="question1" />
-                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][0] ? "bg-[#3498db]" : ""}
-                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
-                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : 
-                            isCorrect && userAnswer == questions[questionNum]['options'][0] ? 'bg-red-500' : 
-                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : ""
-                            }
-                            `} onClick={()=> setUserAnswer(questions[questionNum]['options'][0])} htmlFor="option1">1) {questions[questionNum]['options'][0]}</label>
-                        </li>
-                        <li className='bg-[#f9f9f9]'>
-                            <input type="radio" id="option2" name="question1" />
-                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][1] ? "bg-[#3498db]" : ""}
-                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
-                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : 
-                            isCorrect && userAnswer == questions[questionNum]['options'][1] ? 'bg-red-500' : 
-                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : ""
-                            }
-                            `} 
-                            onClick={()=> setUserAnswer(questions[questionNum]['options'][1])} htmlFor="option2">2) {questions[questionNum]['options'][1]}</label>
-                        </li>
-                        <li className='bg-[#f9f9f9]'>
-                            <input type="radio" id="option3" name="question1" />
-                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][2] ? "bg-[#3498db]" : ""}
-                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
-                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : 
-                            isCorrect && userAnswer == questions[questionNum]['options'][2] ? 'bg-red-500' : 
-                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : ""
-                            }
-                            `} onClick={()=> setUserAnswer(questions[questionNum]['options'][2])} htmlFor="option3">3) {questions[questionNum]['options'][2]}</label>
-                        </li>
-                        <li className='bg-[#f9f9f9]'>
-                            <input type="radio" id="option4" name="question1" />
-                            <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][3] ? "bg-[#3498db]" : ""}
-                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] && 
-                            questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : 
-                            isCorrect && userAnswer == questions[questionNum]['options'][3] ? 'bg-red-500' : 
-                            isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : ""
-                            }
-                            `}  onClick={()=> setUserAnswer(questions[questionNum]['options'][3])} htmlFor="option4">4) {questions[questionNum]['options'][3]}</label>
-                        </li>
-                    </ul>
-                </div> : ""}
-                <button onClick={()=> isRight()} className="submit-btn ml-auto block">Submit</button>
-                <button className="text-white bg-red-400 font-medium 
-                   block ml-auto rounded-md text-lg px-6 py-2 mt-2" onClick={()=> next()}>Next</button>
+                {showResult ? <div className="container0">
+                    <div className="header">Quiz Result</div>
+                    <div className="result">{`${score} out of 10`}</div>
+                    <div className="message">{`${score > 4 ? "Congratulations! You did a great job!" : "Do your best next time"}`}</div>
+                    <button onClick={()=> restart()} className="button">Try Again</button>
+                </div> :
+                    <div>
+                        <h1>Quiz Time!</h1>
+                        {questions[questionNum] ?
+                            <div className="question">
+                                <p className='text-xl mb-2'>{questions[questionNum]['question']}</p>
+                                <ul className="options">
+                                    <li className='bg-[#f9f9f9] rounded-md'>
+                                        <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][0] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] &&
+                                                questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" :
+                                                isCorrect && userAnswer == questions[questionNum]['options'][0] ? 'bg-red-500' :
+                                                    isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][0] ? "bg-green-400" : ""
+                                            }
+                            `} htmlFor="option1">1) {questions[questionNum]['options'][0]}
+                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][0])}
+                                                disabled={isCorrect ? true : false}
+                                                type="radio" id="option1" name="question1" />
+                                        </label>
+                                    </li>
+                                    <li className='bg-[#f9f9f9] rounded-md'>
+                                        <label htmlFor="option2" className={`${!isCorrect && userAnswer == questions[questionNum]['options'][1] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] &&
+                                                questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" :
+                                                isCorrect && userAnswer == questions[questionNum]['options'][1] ? 'bg-red-500' :
+                                                    isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][1] ? "bg-green-400" : ""
+                                            }
+                            `} >2) {questions[questionNum]['options'][1]}
+                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][1])}
+                                                disabled={isCorrect ? true : false} type="radio" id="option2" name="question1" />
+                                        </label>
+                                    </li>
+                                    <li className='bg-[#f9f9f9] rounded-md'>
+                                        <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][2] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] &&
+                                                questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" :
+                                                isCorrect && userAnswer == questions[questionNum]['options'][2] ? 'bg-red-500' :
+                                                    isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][2] ? "bg-green-400" : ""
+                                            }
+                            `} htmlFor="option3">3) {questions[questionNum]['options'][2]}
+                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][2])}
+                                                disabled={isCorrect ? true : false} type="radio" id="option3" name="question1" />
+                                        </label>
+                                    </li>
+                                    <li className='bg-[#f9f9f9] rounded-md'>
+                                        <label className={`${!isCorrect && userAnswer == questions[questionNum]['options'][3] ? "bg-[#3498db]" : ""}
+                            ${isCorrect && userAnswer == questions[questionNum]["correct_answer"] &&
+                                                questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" :
+                                                isCorrect && userAnswer == questions[questionNum]['options'][3] ? 'bg-red-500' :
+                                                    isCorrect && questions[questionNum]["correct_answer"] == questions[questionNum]['options'][3] ? "bg-green-400" : ""
+                                            }
+                            `} htmlFor="option4">4) {questions[questionNum]['options'][3]}
+                                            <input onChange={() => setUserAnswer(questions[questionNum]['options'][3])}
+                                                disabled={isCorrect ? true : false} type="radio" id="option4" name="question1" />
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div> : ""}
+                        {!isCorrect ? <button disabled={userAnswer == "" ? true : false}
+                            onClick={() => {
+                                isRight();
+                            }} className="submit-btn px-4 py-1 ml-auto block">Submit</button> :
+                            <button className="text-white bg-red-400 font-medium 
+                   block ml-auto rounded-md text-lg px-5 py-[5px] mt-2" onClick={() => next()}>Next</button>}
+                   <button onClick={() => { restart() }} type="button" className="text-black bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 
+                focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-md text-lg px-4 py-1 text-center me-2 mb-2">Restart</button>
+                    </div>
+                }
+                
             </div>
         </div>
     )
