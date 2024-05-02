@@ -38,7 +38,7 @@ h1 {
 }
 
 .options input[type="radio"] {
-  /* display: none; */
+  display: none;
 }
 
 .submit-btn {

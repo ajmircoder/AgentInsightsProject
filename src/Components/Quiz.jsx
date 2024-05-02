@@ -97,11 +97,12 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
     }
     const restart = () => {
         localStorage.setItem('quizStarted', true);
+        localStorage.setItem('score', 0);
+        localStorage.setItem('questionNum', 0);
+        localStorage.setItem('violationCount', 0);
         setQuizStarted(false);
         setQuestionNum(0)
         setScore(0);
-        localStorage.setItem('score', 0);
-        localStorage.setItem('questionNum', 0);
         setViolationCount(0);
     }
 
@@ -117,6 +118,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
             if (document.visibilityState === 'hidden') {
                 setViolationCount(violationCount + 1);
             }
+
         };
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
@@ -151,9 +153,13 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
         }
     };
 
+    useEffect(()=>{
+        if(violationCount > 0){
+            alert(`Violation detected ${violationCount} times \nDo not switch tabs `)
+        }
+    }, [violationCount])
     return (
         <div>
-
             <div className="container md:text-xl">
                 <div className=' text-center'>
                     <p>{isFullScreen ? '' : 'Yor are not using full screen'}</p>
@@ -173,7 +179,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                     <div>
                         <h1>Quiz Time!</h1>
                         {questions[questionNum] ?
-                            <form className="question">
+                            <div className="question">
                                 <p className='text-xl mb-2'>{questions[questionNum]['question']}</p>
                                 <ul className="options">
                                     <li className='bg-[#f9f9f9] rounded-md'>
@@ -226,7 +232,7 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                                         </label>
                                     </li>
                                 </ul>
-                            </form> : ""}
+                            </div> : ""}
                         {!isCorrect ? <button disabled={userAnswer == "" ? true : false}
                             onClick={() => {
                                 isRight();
@@ -235,11 +241,6 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
                    block ml-auto rounded-md text-lg px-5 py-[5px] mt-2" onClick={() => next()}>Next</button>}
                         <button onClick={() => { restart() }} type="button" className="text-black bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 
                 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-md text-lg px-4 py-1 text-center me-2 mb-2">Restart</button>
-                        {violationCount >= 1 ?
-                            <div className=' bg-white px-1 py-[1px]'>
-                                <p className=' text-md text-red-700'>Violation Detected {violationCount} Times</p>
-                            </div>
-                            : ""}
                     </div>
                 }
 
