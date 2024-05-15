@@ -25,7 +25,8 @@ This is a simple quiz game page built with React.
 ![image](https://github.com/ajmircoder/AgentInsightsProject/assets/127777945/cb9aa3f0-e86a-4c08-b12c-4abda725c3c6)
 
 
-![image](https://github.com/ajmircoder/AgentInsightsProject/assets/127777945/fc4afc88-e2af-42e7-b394-f9e4f29a8206)
+![image](https://github.com/ajmircoder/AgentInsightsProject/assets/127777945/61bd5abc-e77f-44b4-a69e-cdc954b3f777)
+
 
 
 
