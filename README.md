@@ -1,8 +1,32 @@
-# React + Vite
+# AgentInsightsProject
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a simple quiz game page built with React.
 
-Currently, two official plugins are available:
+## Clone the repository:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- https://github.com/ajmircoder/AgentInsightsProject.git
+
+## Getting Started
+
+- npm i
+
+- npm run dev
+
+- Make sure you have Node.js and npm installed on your machine.
+
+- ## Technologies Used
+  
+- HTML
+- CSS
+- React
+- Tailwind
+- Big Thanks to Chat GPT
+
+![image](https://github.com/ajmircoder/AgentInsightsProject/assets/127777945/cb9aa3f0-e86a-4c08-b12c-4abda725c3c6)
+
+
+![image](https://github.com/ajmircoder/AgentInsightsProject/assets/127777945/61bd5abc-e77f-44b4-a69e-cdc954b3f777)
+
+
+
+
