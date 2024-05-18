@@ -105,7 +105,6 @@ export default function Quiz({ quizStarted, setQuizStarted }) {
         setScore(0);
         setViolationCount(0);
     }
-
     useEffect(() => {
         if (questionNum > 9) {
             setShowResult(true)
